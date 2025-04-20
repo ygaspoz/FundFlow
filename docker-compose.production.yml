@@ -1,7 +1,6 @@
 volumes:
   production_postgres_data: {}
   production_postgres_data_backups: {}
-  production_traefik: {}
   production_django_media: {}
 
 
@@ -17,7 +16,6 @@ services:
       - production_django_media:/app/fundflow/media
     depends_on:
       - postgres
-      - redis
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
