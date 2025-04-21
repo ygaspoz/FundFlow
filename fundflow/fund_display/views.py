@@ -12,7 +12,6 @@ from .models import Account, AccountTranslation, Canton, Percentages
 # Create your views here.
 
 
-@csrf_exempt
 def index(request):
     with open('fundflow/fund_display/data/languages/shorts.json', 'r', encoding='utf-8') as file:
         canton_data = json.load(file)
@@ -43,7 +42,6 @@ def index(request):
             'entries': entries,
             'total': total
         })
-
 
 
 @login_required

@@ -3,92 +3,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swiss Tax Information</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    {% csrf_token %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Tax Information</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  {% csrf_token %}
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Swiss Tax Distribution Calculator</h1>
-            <p>Find out how your tax money is distributed across different sectors</p>
-        </header>
+  <div class="container">
+    <header>
+      <h1>Swiss Tax Distribution Calculator</h1>
+      <p>Find out how your tax money is distributed across different sectors</p>
+    </header>
 
-        <section class="tax-form">
-          <form id="taxForm" method="POST" action="{% url 'fund_display:home' %}">
-                <div class="form-group">
-                    <label for="taxAmount">How much taxes did you pay this year? (CHF)</label>
-                    <input type="number" id="taxAmount" name="taxAmount" min="0" required>
-                </div>
+    <section class="tax-form">
+      <form id="taxForm" method="POST" action="{% url 'fund_display:home' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="taxAmount">How much taxes did you pay this year? (CHF)</label>
+          <input type="number" id="taxAmount" name="taxAmount" min="0" required>
+        </div>
 
-                <div class="form-group">
-                    <label for="canton">In which canton do you live?</label>
-                    <select id="canton" name="canton" required>
-                        <option value="" disabled selected>Select your canton</option>
-                        {% for id, name in cantons.items %}
-                          <option value="{{ id.lower }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+        <div class="form-group">
+          <label for="canton">In which canton do you live?</label>
+          <select id="canton" name="canton" required>
+            <option value="" disabled selected>Select your canton</option>
+            {% for id, name in cantons.items %}
+              <option value="{{ id.lower }}">{{ name }}</option>
+            {% endfor %}
+          </select>
+        </div>
 
-                <div class="form-group checkbox">
-                    <input type="checkbox" id="detailedView" name="detailedView">
-                    <label for="detailedView">Show detailed breakdown</label>
-                </div>
+        <div class="form-group checkbox">
+          <input type="checkbox" id="detailedView" name="detailedView">
+          <label for="detailedView">Show detailed breakdown</label>
+        </div>
 
-                <button type="submit" class="btn-submit">Calculate Distribution</button>
-            </form>
-        </section>
+        <button type="submit" class="btn-submit">Calculate Distribution</button>
+      </form>
+    </section>
 
-        {% if entries is not None %}
-        <section class="results" id="results">
-            <h2>Your Tax Distribution</h2>
-            
-            <div class="summary-container">
-                <div class="total-tax">
-                    <h3>Total Tax Paid</h3>
-                    <span id="totalTaxValue">CHF {{ total }}</span>
-                </div>
-                <div class="canton-info">
-                    <h3>Canton</h3>
-                    <span id="cantonName">{{ canton }}</span>
-                </div>
-            </div>
-            
-            <div class="distribution-container" id="distribution-container">
-                <!-- Distribution items will be dynamically generated here -->
-            </div>
-            
-            <div class="detailed-view" id="detailedResults">
-                <h3>Detailed Breakdown</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Amount (CHF)</th>
-                            <th>Percentage</th>
-                        </tr>
-                    </thead>
-                      <tbody id="detailTable">
-                      {% for entry in entries %}
-                        <tr>
-                          <td class="category-name">{{ entry.name }}</td>
-                          <td>
-                            <div class="progress-bar">
-                              <div class="progress" style="width: {{ entry.percentage }}%"></div>
-                            </div>
-                          </td>
-                          <td class="amount">CHF {{ entry.amount }}</td>
-                        </tr>
-                      {% endfor %}
-                      </tbody>
-                </table>
-            </div>
-        </section>
-        {% endif %}
-    </div>
+    {% if entries is not None %}
+    <section class="results" id="results">
+      <h2>Your Tax Distribution</h2>
+      <div class="summary-container">
+        <div class="total-tax">
+          <h3>Total Tax Paid</h3>
+          <span id="totalTaxValue">CHF {{ total }}</span>
+        </div>
+        <div class="canton-info">
+          <h3>Canton</h3>
+          <span id="cantonName">{{ canton }}</span>
+        </div>
+      </div>
+      
+      <div class="distribution-container" id="distribution-container">
+          <!-- Distribution items will be dynamically generated here -->
+      </div>
+      
+      <div class="detailed-view" id="detailedResults">
+        <h3>Detailed Breakdown</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Amount (CHF)</th>
+              <th>Percentage</th>
+            </tr>
+          </thead>
+            <tbody id="detailTable">
+            {% for entry in entries %}
+              <tr>
+                <td class="category-name">{{ entry.name }}</td>
+                <td>
+                  <div class="progress-bar">
+                    <div class="progress" style="width: {{ entry.percentage }}%"></div>
+                  </div>
+                </td>
+                <td class="amount">CHF {{ entry.amount }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </section>
+    {% endif %}
+  </div>
 
     <footer>
       <p>&copy; {{ now.year }} Yann Gaspoz. All rights reserved.</p>
