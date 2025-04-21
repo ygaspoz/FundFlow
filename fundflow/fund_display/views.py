@@ -16,7 +16,11 @@ def index(request):
     with open('fundflow/fund_display/data/languages/shorts.json', 'r', encoding='utf-8') as file:
         canton_data = json.load(file)
 
-    cantons = {code.upper(): _(name) for code, name in canton_data['de'].items()}
+    if request.LANGUAGE_CODE == 'en':
+        lang_canton = 'de'
+    else:
+        lang_canton = request.LANGUAGE_CODE[:2]
+    cantons = {code.upper(): _(name) for code, name in canton_data[lang_canton].items()}
     if request.method == "GET":
 
         return render(request, 'fund_display/index.html', {'cantons': cantons, 'entries': None, 'total': 0})
@@ -30,7 +34,7 @@ def index(request):
         entries = []
         for item in canton_percentages:
             if len(Account.objects.filter(id=item.account.id).first().account_number) == 1:
-                account_translation = AccountTranslation.objects.filter(account_id=item.account).first()
+                account_translation = AccountTranslation.objects.filter(account_id=item.account, language=request.LANGUAGE_CODE[:2]).first()
                 account_name = account_translation.account_name
                 percentage = item.percentage
                 amount = round(float(total) * percentage / 100, 2)

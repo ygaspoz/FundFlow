@@ -1,3 +1,4 @@
+{% load l10n %}
 {% load i18n %}
 {% load static %}
 <!DOCTYPE html>
@@ -10,24 +11,40 @@
   {% csrf_token %}
 </head>
 <body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a class="navbar-brand" href="{% url 'fund_display:home' %}">FundFlow</a>
+      <form method="post" action="{% url 'fund_display:set_language' %}" class="language-selector">
+        {% csrf_token %}
+        <select name="language" onchange="this.form.submit()">
+          {% get_current_language as LANGUAGE_CODE %}
+          {% for lang_code, lang_name in LANGUAGES %}
+            <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>
+              {{ lang_name }}
+            </option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+  </nav>
   <div class="container">
     <header>
       <h1>Swiss Tax Distribution Calculator</h1>
-      <p>Find out how your tax money is distributed across different sectors</p>
+      <p>{% trans 'Find out how your tax money is distributed across different sectors' %}</p>
     </header>
 
     <section class="tax-form">
       <form id="taxForm" method="POST" action="{% url 'fund_display:home' %}">
         {% csrf_token %}
         <div class="form-group">
-          <label for="taxAmount">How much taxes did you pay this year? (CHF)</label>
+          <label for="taxAmount">{% trans  'How much taxes did you pay this year? (CHF)' %}</label>
           <input type="number" id="taxAmount" name="taxAmount" min="0" required>
         </div>
 
         <div class="form-group">
-          <label for="canton">In which canton do you live?</label>
+          <label for="canton">{% trans 'In which canton do you live?' %}</label>
           <select id="canton" name="canton" required>
-            <option value="" disabled selected>Select your canton</option>
+            <option value="" disabled selected>{% trans 'Select your canton' %}</option>
             {% for id, name in cantons.items %}
               <option value="{{ id.lower }}">{{ name }}</option>
             {% endfor %}
@@ -36,23 +53,23 @@
 
         <div class="form-group checkbox">
           <input type="checkbox" id="detailedView" name="detailedView">
-          <label for="detailedView">Show detailed breakdown</label>
+          <label for="detailedView">{% trans 'Show detailed breakdown' %}</label>
         </div>
 
-        <button type="submit" class="btn-submit">Calculate Distribution</button>
+        <button type="submit" class="btn-submit">{% trans 'Calculate Distribution' %}</button>
       </form>
     </section>
 
     {% if entries is not None %}
     <section class="results" id="results">
-      <h2>Your Tax Distribution</h2>
+      <h2>{% trans 'Your Tax Distribution' %}</h2>
       <div class="summary-container">
         <div class="total-tax">
-          <h3>Total Tax Paid</h3>
-          <span id="totalTaxValue">CHF {{ total }}</span>
+          <h3>{% trans 'Total Tax Paid' %}</h3>
+          <span id="totalTaxValue">{% trans 'CHF' %} {{ total }}</span>
         </div>
         <div class="canton-info">
-          <h3>Canton</h3>
+          <h3>{% trans 'Canton' %}</h3>
           <span id="cantonName">{{ canton }}</span>
         </div>
       </div>
@@ -62,13 +79,13 @@
       </div>
       
       <div class="detailed-view" id="detailedResults">
-        <h3>Detailed Breakdown</h3>
+        <h3>{% trans 'Breakdown' %}</h3>
         <table>
           <thead>
             <tr>
-              <th>Category</th>
-              <th>Amount (CHF)</th>
-              <th>Percentage</th>
+              <th>{% trans 'Category' %}</th>
+              <th>{% trans 'Percentage' %}</th>
+              <th>{% trans 'Amount (CHF)' %}</th>
             </tr>
           </thead>
             <tbody id="detailTable">
@@ -77,7 +94,9 @@
                 <td class="category-name">{{ entry.name }}</td>
                 <td>
                   <div class="progress-bar">
+                    {% localize off %}
                     <div class="progress" style="width: {{ entry.percentage }}%"></div>
+                    {% endlocalize %}
                   </div>
                 </td>
                 <td class="amount">CHF {{ entry.amount }}</td>
@@ -91,7 +110,7 @@
   </div>
 
     <footer>
-      <p>&copy; {{ now.year }} Yann Gaspoz. All rights reserved.</p>
+      <p>&copy; {% now "Y" %} Yann Gaspoz. All rights reserved.</p>
     </footer>
 </body>
 </html>
