@@ -74,11 +74,7 @@
         </div>
       </div>
       
-      <div class="distribution-container" id="distribution-container">
-          <!-- Distribution items will be dynamically generated here -->
-      </div>
-      
-      <div class="detailed-view" id="detailedResults">
+      <div class="detailed-view" id="Results">
         <h3>{% trans 'Breakdown' %}</h3>
         <table>
           <thead>
@@ -107,10 +103,48 @@
       </div>
     </section>
     {% endif %}
+    {% if entries_detailed is not None %}
+      <table>
+        <thead>
+          <tr>
+            <th>{% trans 'Category' %}</th>
+            <th>{% trans 'Amount (CHF)' %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in entries_detailed %}
+            {% if entry.is_main %}
+              <tr>
+                <td class="category-name"><b>{{ entry.name }}</b></td>
+                <td class="amount"><b>CHF {{ entry.amount }}</b></td>
+              </tr>
+            {% else %}
+              <tr class="indented-entry">
+                <td class="category-name">{{ entry.name }}</td>
+                <td class="amount">CHF {{ entry.amount }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
   </div>
 
     <footer>
       <p>&copy; {% now "Y" %} Yann Gaspoz. All rights reserved.</p>
     </footer>
 </body>
+<style>
+  .indented-entry td {
+    position: relative;
+    padding-left: 50px; /* Indentation */
+  }
+
+  .indented-entry td:first-child::before {
+    content: "-";
+    position: absolute;
+    left: 30px; /* Adjust position of the dot */
+    color: black;
+  }
+</style>
 </html>

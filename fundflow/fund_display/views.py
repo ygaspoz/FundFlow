@@ -16,11 +16,7 @@ def index(request):
     with open('fundflow/fund_display/data/languages/shorts.json', 'r', encoding='utf-8') as file:
         canton_data = json.load(file)
 
-    if request.LANGUAGE_CODE == 'en':
-        lang_canton = 'de'
-    else:
-        lang_canton = request.LANGUAGE_CODE[:2]
-    cantons = {code.upper(): _(name) for code, name in canton_data[lang_canton].items()}
+    cantons = {code.upper(): _(name) for code, name in canton_data[request.LANGUAGE_CODE[:2]].items()}
     if request.method == "GET":
 
         return render(request, 'fund_display/index.html', {'cantons': cantons, 'entries': None, 'total': 0})
@@ -32,19 +28,33 @@ def index(request):
         canton = Canton.objects.filter(name=canton).first()
         canton_percentages = Percentages.objects.filter(canton=canton)
         entries = []
+        entries_detailed = None
+        if detailed_view:
+            entries_detailed = []
+            for item in canton_percentages:
+                account_translation = AccountTranslation.objects.filter(account_id=item.account,
+                                                                        language=request.LANGUAGE_CODE[:2]).first()
+                account_name = account_translation.account_name
+                percentage = item.percentage
+                amount = round(float(total) * percentage / 100, 2)
+                if len(Account.objects.filter(id=item.account.id).first().account_number) == 1:
+                    entries_detailed.append({"name": account_name, "percentage": percentage, "amount": amount, "is_main": True})
+                else:
+                    entries_detailed.append({"name": account_name, "percentage": percentage, "amount": amount, "is_main": False})
         for item in canton_percentages:
             if len(Account.objects.filter(id=item.account.id).first().account_number) == 1:
-                account_translation = AccountTranslation.objects.filter(account_id=item.account, language=request.LANGUAGE_CODE[:2]).first()
+                account_translation = AccountTranslation.objects.filter(account_id=item.account,
+                                                                        language=request.LANGUAGE_CODE[:2]).first()
                 account_name = account_translation.account_name
                 percentage = item.percentage
                 amount = round(float(total) * percentage / 100, 2)
                 entries.append({"name": account_name, "percentage": percentage, "amount": amount})
-
         return render(request, 'fund_display/index.html', {
             'cantons': cantons,
             'canton': cantons[canton.name.upper()],
             'entries': entries,
-            'total': total
+            'total': total,
+            'entries_detailed': entries_detailed
         })
 
 

@@ -1,7 +1,7 @@
 {
   "de": {
     "bund": "Bund",
-    "ag": "Argau",
+    "ag": "Aargau",
     "ai": "Appenzell I.Rh.",
     "ar": "Appenzell A.Rh.",
     "be": "Bern",
@@ -55,6 +55,35 @@
     "vd": "Vaud",
     "vs": "Valais",
     "zg": "Zoug",
+    "zh": "Zurich"
+  },
+  "en": {
+    "bund": "State",
+    "ag": "Aargau",
+    "ai": "Appenzell I.Rh.",
+    "ar": "Appenzell O.Rh.",
+    "be": "Bern",
+    "bl": "Basel District",
+    "bs": "Basel",
+    "fr": "Fribourg",
+    "ge": "Geneva",
+    "gl": "Glarus",
+    "gr": "Grisons",
+    "ju": "Jura",
+    "lu": "Lucerne",
+    "ne": "Neuchâtel",
+    "nw": "Nidwalden",
+    "ow": "Obwalden",
+    "sg": "Sankt Gallen",
+    "sh": "Schaffhausen",
+    "so": "Solothurn",
+    "sz": "Schwyz",
+    "tg": "Thurgau",
+    "ti": "Ticino",
+    "ur": "Uri",
+    "vd": "Vaud",
+    "vs": "Valais",
+    "zg": "Zug",
     "zh": "Zurich"
   }
 }
